@@ -6,7 +6,7 @@ import java.sql.*;
 import java.util.*;
 
 public class Basic extends adminCases{ //Basic class extends the adminCases class
-
+    
     public static void adminLogin() throws Exception{
         DBInitializer.createNewConnection(); //establish connection
         Scanner sc=new Scanner(System.in);
@@ -17,10 +17,7 @@ public class Basic extends adminCases{ //Basic class extends the adminCases clas
         System.out.println("ENTER PASSWORD");
         String passwordInput=sc.nextLine(); //input password from the admin
 
-        Users user=new Users(usernameInput,passwordInput,"admin");
-        //instantiate user object and set the values to its attributes
-
-        String sql =DBQuery.adminCheck(user); //returns query to validate input username and password
+        String sql =DBQuery.adminCheck(usernameInput,passwordInput); //returns query to validate input username and password
 
         ResultSet rs=DBInitializer.s.executeQuery(sql); 
         rs.next();
@@ -28,7 +25,7 @@ public class Basic extends adminCases{ //Basic class extends the adminCases clas
 
         if(check==1){ //corresponding username and password exists
             System.out.println("LOGGED IN SUCCESSFULLY");
-            Basic.adminOperations(user.userName,sc); //choose from the list of admin operations
+            adminCases.adminOperations(user.userName,sc); //choose from the list of admin operations
         }
         else{
             System.out.println("INVALID LOGIN"); 
@@ -56,11 +53,11 @@ public class Basic extends adminCases{ //Basic class extends the adminCases clas
         if (check == 1)
         {
             System.out.println("LOGGED IN SUCCESSFULLY");
-            //doctorOperations(user.userName,sc);
+            doctorCases.doctorOperations(user.userName,sc);
         }
         else {
             System.out.println("INVALID LOGIN");
-            Basic.doctorLogin();
+            doctorLogin();
         }
         sc.close();
     }
@@ -84,7 +81,7 @@ public class Basic extends adminCases{ //Basic class extends the adminCases clas
         if (check == 1)
         {
             System.out.println("LOGGED IN SUCCESSFULLY");
-            //patientOperations(user.userName,sc);
+            patientCases.patientOperations(user.userName,sc);
         }
 
         else {
@@ -119,110 +116,4 @@ public class Basic extends adminCases{ //Basic class extends the adminCases clas
         }
         sc.close(); 
     }
-    //method having the main menu of the admin login
-    public static void adminOperations(String username,Scanner sc) throws Exception{
-        do{
-            System.out.println("------------------\n1.CHANGE PASSWORD\n2.ADD USER\n3.REMOVE USER\n4.UPDATE USER\n5.VIEW USER\n6.VIEW PATIENTS\n7.VIEW DOCTORS\n8.LOGOUT\n------------------");
-            int action=sc.nextInt();
-            switch(action){
-                case 1:
-                changePassword(username,sc);
-                break;
-
-                case 2:
-                addUser(username,sc);
-                break;
-
-                case 3:
-                removeUser(username,sc);
-                break;
-
-                case 4:
-                updateUser(username,sc);
-                break;
-
-                case 5:
-                viewUser(username,sc);
-                break;
-
-                case 6:
-                viewPatients();
-                break;
-
-                case 7:
-                viewDoctors();
-                break;
-
-                case 8:
-                adminLogout();
-                break;
-            
-                default:
-                break;
-            }
-            System.out.println("CONTINUE-->Y");
-        }while(sc.next().charAt(0)=='y'||sc.next().charAt(0)=='Y');
-    }
-    /*public static void patientOperations(String username,Scanner sc) throws Exception{
-        do {
-            System.out.println(
-                    "1.CHANGE PASSWORD\n2.CANCEL APPOINTMENT\n3.RESCHEDULE APPOINTMENT\n4.VIEW APPOINTMENTS\n5.UPDATE AVAILABILITY");
-            int action = sc.nextInt();
-            switch (action) {
-                case 1:
-                    changePassword(username);
-                break;
-
-                case 2:
-                    scheduleAppointment(username);
-                break;
-
-                
-                case 3:
-                    cancelAppointment(username);
-                break;
-
-                case 4:
-                    rescheduleAppointment(username);
-                break;
-
-                default:
-                break;
-            }
-            System.out.println("CONTINUE-->Y\nEXIT-->N");
-        } while (sc.next().charAt(0) == 'y' || sc.next().charAt(0) == 'Y');
-
-    }
-    public static void doctorOperations(String username,Scanner sc) throws Exception{
-        do {
-            System.out.println("1.CHANGE PASSWORD\n2.CANCEL APPOINTMENT\n3.RESCHEDULE APPOINTMENT\n4.VIEW APPOINTMENTS\n5.UPDATE AVAILABILITY");
-            int action = sc.nextInt();
-            switch (action) {
-                case 1:
-                    changePassword(username);
-                    break;
-
-                case 2:
-                    cancelAppointment();
-                    break;
-
-                case 3:
-                    rescheduleAppointment();
-                break;
-                
-                case 4:
-                    viewAppointments();
-                break;
-                
-                case 5:
-                    updateAvailability();
-                break;
-
-                default:
-                break;
-            }
-            System.out.println("CONTINUE-->Y\nEXIT-->N");
-        } while (sc.next().charAt(0) == 'y' || sc.next().charAt(0) == 'Y');
-    }*/
-
 }

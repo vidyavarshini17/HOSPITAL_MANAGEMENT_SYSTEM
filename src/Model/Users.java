@@ -2,9 +2,9 @@ package Model;
 
 public class Users {
     //user object attributes
-    public String userName;
-    public String passWord;
-    public String userType;
+    String userName;
+    String passWord;
+    String userType;
 
     //constructor to instantiate the object once and set values to its attributes
     public Users(String userName,String passWord,String userType){

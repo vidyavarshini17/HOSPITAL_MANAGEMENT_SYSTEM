@@ -6,6 +6,50 @@ import DBController.*;
 import java.sql.*;
 
 public class adminCases {
+    //method having the main menu of the admin login
+    public static void adminOperations(String username,Scanner sc) throws Exception{
+        do{
+            System.out.println("------------------\n1.CHANGE PASSWORD\n2.ADD USER\n3.REMOVE USER\n4.UPDATE USER\n5.VIEW USER\n6.VIEW PATIENTS\n7.VIEW DOCTORS\n8.LOGOUT\n------------------");
+            int action=sc.nextInt();
+            switch(action){
+                case 1:
+                changePassword(username,sc);
+                break;
+
+                case 2:
+                addUser(username,sc);
+                break;
+
+                case 3:
+                removeUser(username,sc);
+                break;
+
+                case 4:
+                updateUser(username,sc);
+                break;
+
+                case 5:
+                viewUser(username,sc);
+                break;
+
+                case 6:
+                viewPatients();
+                break;
+
+                case 7:
+                viewDoctors();
+                break;
+
+                case 8:
+                adminLogout(sc);
+                break;
+            
+                default:
+                break;
+            }
+            System.out.println("CONTINUE-->Y");
+        }while(sc.next().charAt(0)=='y'||sc.next().charAt(0)=='Y');
+    }
     protected static void addUser(String username,Scanner sc) throws Exception{
         char choice;
         do{
@@ -53,9 +97,9 @@ public class adminCases {
     protected static void addPatient(Scanner sc) throws SQLException{
 
         System.out.println("NAME--> ");
-        String new_name=sc.next();
+        String newName=sc.next();
 
-        Patients patient=new Patients(0,new_name,0);
+        Patients patient=new Patients(0,newName,0);
         //call method having query to add patient into the database and store the query in string sql
         String sql=DBQuery.addPatientQuery(patient);
 
@@ -90,15 +134,15 @@ public class adminCases {
             System.out.println("CONTINUE SAME OPERATION-->Y\nBACK TO OPERATIONS-->N");
             choice=sc.next().charAt(0);
             if(choice=='n'||choice=='N')
-                Basic.adminOperations(username,sc); //returns to the main menu of the admin login
+                adminOperations(username,sc); //returns to the main menu of the admin login
 
         }while(choice=='y'||choice=='Y'); //loop to perform the same operation again
     }
 
     protected static void removeDoctor(int id) throws SQLException{
+
         Doctors doctor=new Doctors(id,null,null);
         //instantiate doctor object and set values to its attributes
-
         String sql=DBQuery.removeDoctorQuery(doctor);
     
         int deletionCheck=DBInitializer.s.executeUpdate(sql);
@@ -110,6 +154,7 @@ public class adminCases {
 
     }
     protected static void removePatient(int id) throws SQLException{
+
         Patients patient=new Patients(id,null, 0);
         //instantiate patient object and set values to its attributes
         String sql=DBQuery.removePatientQuery(patient);
@@ -264,8 +309,13 @@ public class adminCases {
         else
             System.out.println("PASSWORD UPDATION FAILED");
     }   
-    protected static void adminLogout() throws Exception{
+    protected static void adminLogout(Scanner sc) throws Exception{
         System.out.println("LOGGED OUT SUCCESSFULLY");
-        App.signInOrSignUp();
+        System.out.println("LOGIN OR REGISTER --> 'L' GO TO MAIN MENU --> 'M'");
+        char loop=sc.next().charAt(0);
+        if(loop=='L'||loop=='l')
+            App.signInOrSignUp();
+        else
+            App.displayMainMenu(sc);
     }
 }

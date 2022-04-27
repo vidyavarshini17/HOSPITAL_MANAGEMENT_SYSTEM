@@ -4,11 +4,16 @@ import java.util.*;
 public class App {
     public static void main(String[] args) throws Exception{
         Scanner sc=new Scanner(System.in);
-        System.out.println("------------------------------------\nHOSPITAL DATABASE MANAGEMENT SYSTEM\n------------------------------------\nCHOOSE USER TYPE\n1.ADMIN\n2.DOCTOR\n3.PATIENT");
+        System.out.println("------------------------------------\nHOSPITAL DATABASE MANAGEMENT SYSTEM\n------------------------------------");
+        displayMainMenu(sc);
+        sc.close();
+    }
+    public static void displayMainMenu(Scanner sc) throws Exception{
+        System.out.println("CHOOSE USER TYPE\n1.ADMIN\n2.DOCTOR\n3.PATIENT");
         int option=sc.nextInt(); //choose user type -- > admin/doctor/patient
         switch(option){
             case 1:
-            signInOrSignUp();
+            signInOrSignUp(); //choose adminLogin or register users
             break;
 
             case 2:
@@ -22,11 +27,10 @@ public class App {
             default:
             break;
         }
-        sc.close();
     }
     public static void signInOrSignUp() throws Exception{
             Scanner sc=new Scanner(System.in);
-            System.out.println("---------------\n1.ADMIN LOGIN\n2.ADMIN SIGNUP\n3.PATIENT SIGNUP\n4.DOCTOR SIGNUP\n---------------");
+            System.out.println("---------------\n1.ADMIN LOGIN\n2.ADMIN SIGNUP\n3.REGISTER PATIENT\n4.REGISTER DOCTOR\n---------------");
             int choice=sc.nextInt(); 
             switch(choice){
                 case 1:
@@ -52,6 +56,7 @@ public class App {
                     System.exit(0);
                 break;
             }
+            sc.close();
         }
     }
 
