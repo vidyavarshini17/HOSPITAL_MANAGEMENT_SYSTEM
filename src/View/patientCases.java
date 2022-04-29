@@ -126,7 +126,15 @@ public class patientCases {
     }
 
     public static void cancelAppointment(Scanner sc){
-        //YET TO COMPLETE
+        try{
+        System.out.println("ENTER THE APPOINTMENT ID");
+        int id=sc.nextInt();
+        if(DBHandler.cancelAppointmentHandler(id)==1)
+            System.out.println("APPOINTMENT CANCELLED");
+        }
+        catch(Exception e){
+            System.out.println("APPOINTMENT NOT CANCELLED");
+        }            
     }
 
     public static void patientLogout(Scanner sc){

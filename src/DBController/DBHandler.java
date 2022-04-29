@@ -339,19 +339,40 @@ public class DBHandler {
                     return 0;
                 }
             }
-            public static int selectID(Appointments appointment){
-                try{   
-                    DBInitializer.createNewConnection();
-                    String sql2=DBQuery.selectAppointmentIdQuery(appointment);
-                    ResultSet rs1=DBInitializer.s.executeQuery(sql2);
-                    rs1.next();
-                    int newAppointmentId2=rs1.getInt(1);
-                    return newAppointmentId2;
-                    }
-                catch(Exception e){
-                    return 0;
-                }
+    public static int selectID(Appointments appointment){
+        try{   
+            DBInitializer.createNewConnection();
+            String sql2=DBQuery.selectAppointmentIdQuery(appointment);
+            ResultSet rs1=DBInitializer.s.executeQuery(sql2);
+            rs1.next();
+            int newAppointmentId2=rs1.getInt(1);
+            return newAppointmentId2;
+        }
+        catch(Exception e){
+            return 0;
+        }
+    }
+    public static int cancelAppointmentHandler(int id){
+        try{      
+            DBInitializer.createNewConnection();
+            String slotStatus="unbooked";
+            String updateStatus="update availability set status='"+slotStatus+"' where appointment_id='"+id+"'";
+            int check1=DBInitializer.s.executeUpdate(updateStatus);
+            if(check1==1){
+            String removeAppointment="delete from appointments where appointment_id='"+id+"'";
+            int check2=DBInitializer.s.executeUpdate(removeAppointment);
+            if(check2==1)
+                return 1;
+            else
+                return 0;
             }
+            else
+                return 0;
+        }
+        catch(Exception e){
+            return 0;
+        }
+    }
 
 
 }

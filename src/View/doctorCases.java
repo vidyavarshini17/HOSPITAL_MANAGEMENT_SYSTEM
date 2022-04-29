@@ -1,5 +1,8 @@
 package View;
+import java.sql.*;
 import java.util.*;
+import DBController.*;
+import Model.*;
 
 public class doctorCases {
     //method having main menu for doctor login
@@ -44,7 +47,7 @@ public class doctorCases {
     }
     //view the appointments of a particular doctor
     public static void viewAppointment(Scanner sc){
-        /*
+    try{
         System.out.println("ENTER ID ");
         int id=sc.nextInt();
 
@@ -52,20 +55,25 @@ public class doctorCases {
         String sql=DBQuery.viewAppointmentQuery(doctor);
         ResultSet rs=DBInitializer.s.executeQuery(sql);
         while(rs.next()){
-            System.out.println();
+            System.out.println(rs.getInt(1)+" "+rs.getInt(2)+" "+rs.getInt(3)+" "+rs.getString(4)+" "+rs.getString(5)+" "+rs.getString(6));
         }
-        //YET TO COMPLETE
-        */
+    }
+    catch(Exception e){
+        System.out.println("UNABLE TO DISPLAY APPOINTMENT");
+    }
     }
     //view all the appointments so far
     public static void viewAllAppointments(){
-        /*
+        try{
         String sql="select * from appointments inner join availability ON appointments.appointment_id=availability.appointment_id";
         ResultSet rs=DBInitializer.s.executeQuery(sql);
         while(rs.next()){
-            System.out.println(rs.getInt()+" "+rs.get);
+            System.out.println(rs.getInt(1)+" "+rs.getInt(2)+" "+rs.getInt(3)+" "+rs.getString(4)+" "+rs.getString(5)+" "+rs.getString(6));
         }
-        */
+    }
+        catch(Exception e){
+            System.out.println("UNABLE TO VIEW APPOINTMENTS");
+        }
     }
     public static void updateAvailability(){
         //YET TO COMPLETE
