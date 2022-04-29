@@ -12,5 +12,15 @@ public class Doctors {
         this.doctorName=doctorName;
         this.specialization=specialization;
     }
+
+    public int getDoctorID() {
+        return doctorID;
+    }
+    public String getDoctorName() {
+        return doctorName;
+    }
+    public String getSpecialization() {
+        return specialization;
+    }
     
 }

@@ -1,13 +1,12 @@
 package View;
 
 import java.util.*;
-import java.sql.*;
 import DBController.*;
 import Model.*;
 
 public class patientCases {
     //method having the main menu for patient login
-    public static void patientOperations(String username,Scanner sc) throws Exception{
+    public static void patientOperations(String username,Scanner sc){
         do {
             System.out.println("1.CHANGE PASSWORD\n2.SCHEDULE APPOINTMENT\n3.RESCHEDULE APPOINTMENT\n4.CANCEL APPOINTMENT\n5.LOGOUT");
             int action = sc.nextInt();
@@ -39,14 +38,13 @@ public class patientCases {
         } while (sc.next().charAt(0) == 'y' || sc.next().charAt(0) == 'Y');
     }
 
-    public static void scheduleAppointment(String username,Scanner sc) throws Exception {
+    public static void scheduleAppointment(String username,Scanner sc) {
         char choice;
         do{
         System.out.println("ENTER THE SPECIALIZATION");
         String requiredSpecialization=sc.next();
-        Doctors doctor=new Doctors(0,null, requiredSpecialization);
 
-        checkSpecialistAvailability(username,sc,doctor);
+        checkSpecialistAvailability(username,sc,requiredSpecialization);
 
         System.out.println("CONTINUE SAME OPERATION-->Y\nBACK TO OPERATIONS-->N");
         choice=sc.next().charAt(0);
@@ -55,25 +53,20 @@ public class patientCases {
     }while(choice=='y'||choice=='Y');
 
     }
-    private static void checkSpecialistAvailability(String username,Scanner sc,Doctors doctor) throws Exception{
-        String checkRequiredSpecialization=DBQuery.checkSpecialization(doctor);
-        ResultSet r=DBInitializer.s.executeQuery(checkRequiredSpecialization);
-        r.next();
-
+    private static void checkSpecialistAvailability(String username,Scanner sc,String requiredSpecialization){
+        try{
         //if required specialist(s) is/are available display their details for patient to choose
-        if(r.getInt("C")>=1){
+        if(DBHandler.returnNumberOfSpecialists(requiredSpecialization)>=1){
+            Doctors doctor=new Doctors(0, null, requiredSpecialization);
+
             System.out.println("DOCTOR ID : \tDOCTOR NAME : \tDOCTOR SPECIALIZATION :");
-            String displaySpecialization=DBQuery.viewSpecialization(doctor);
-            ResultSet rs=DBInitializer.s.executeQuery(displaySpecialization);
-            while(rs.next()){
-                System.out.println(r.getInt(1)+"\t"+r.getString(2)+"\t"+r.getInt(3));
-            }
+
+            DBHandler.returnSpecialists(doctor);
+            
             System.out.println("CHOOSE DOCTOR ID");
             int chosenDoctorID=sc.nextInt(); 
 
-            Doctors doctor1=new Doctors(chosenDoctorID,null,doctor.specialization);
-
-            displayAvailability(doctor1); //check the available slots and days for the particular doctor
+            displayAvailability(chosenDoctorID,requiredSpecialization); //check the available slots and days for the particular doctor
             
             System.out.println("CHOOSE THE DAY");
             String chosenDay=sc.next();
@@ -81,54 +74,51 @@ public class patientCases {
             String chosenSlot=sc.next();
             System.out.println("ENTER THE PATIENT ID");
             int patientId=sc.nextInt();
+            String slotStatus="booked";       
 
-            Availability availabilityObject=new Availability(doctor1.doctorID,chosenDay,chosenSlot,"booked",0);
-            Patients patient=new Patients(patientId, null, 0);
-            
-            String sql=DBQuery.updateStatus(availabilityObject);
-            int check=DBInitializer.s.executeUpdate(sql);
-            if(check==1){
+            if(DBHandler.statusUpdate(slotStatus,chosenDay,chosenSlot,chosenDoctorID)==1){
                 System.out.println("APPOINTMENT BOOKED");
-                Appointments appointment=new Appointments(0, availabilityObject.doctorID,patient.patientID);
-                addAppointment(appointment,availabilityObject);
+                addAppointment(chosenDoctorID,patientId,slotStatus,chosenDay,chosenSlot);
             }
-            else{
-                System.out.println("BOOKING FAILED");
-            }
+            else
+                System.out.println("UNABLE ADD APPOINTMENT");
         }
         else{
-            System.out.println("CHOOSE ANOTHER SPECIALIZATION --> Y");
-            scheduleAppointment(username,sc);
+                System.out.println("BOOKING FAILED");
+                System.out.println("CHOOSE SPECIALIZATION --> Y");
+                scheduleAppointment(username,sc);
+            }
+        }
+        catch(Exception e){
+            System.out.println("TRY AGAIN");
         }
     }
-
     //method to display all available days and slots of a particular doctor
-    private static void displayAvailability(Doctors doctor1) throws Exception{
+    private static void displayAvailability(int id,String chosenSpecialization){
+
+        try{
         System.out.println("DOCTOR ID : \tDAY : \tAVAILABLE SLOT : ");
         String bookingStatus="unbooked";
-        String sql=DBQuery.displayAvailableSlots(bookingStatus,doctor1);
-        ResultSet rs=DBInitializer.s.executeQuery(sql);
-        while(rs.next()){
-            System.out.println(rs.getInt(1)+"\t"+rs.getString(2)+"\t"+rs.getString(3));
+
+        Doctors doctor=new Doctors(id,null, chosenSpecialization);
+        DBHandler.slotdisplay(bookingStatus,doctor);
+    }
+    catch(Exception e){
+        System.out.println("UNABLE TO DISPLAY SLOTS");
         }
     }
-    private static void addAppointment(Appointments appointment,Availability availabilityObject) throws Exception{
-        String sql1=DBQuery.insertAppointmentDetails(appointment);
-        int check1=DBInitializer.s.executeUpdate(sql1);
-        if(check1==1){
-        String sql2=DBQuery.insertAppointmentId(appointment);
-        ResultSet rs1=DBInitializer.s.executeQuery(sql2);
-        rs1.next();
-        int newAppointmentId=rs1.getInt(1);
-        String sql3=DBQuery.updateAppID(newAppointmentId,appointment,availabilityObject);             
-        int check2=DBInitializer.s.executeUpdate(sql3);
-        if(check2==1)
-            System.out.println("LOADING...\n");
-        else
-            System.out.println("FAILED...\n");
+    private static void addAppointment(int doctor_ID,int patient_ID,String slotStatus,String chosenDay,String chosenSlot){
+        try{
+            if(DBHandler.addNewAppointment(doctor_ID,patient_ID, chosenSlot, chosenSlot, chosenSlot)==1){            
+                System.out.println("NEW APPOINTMENT CREATED");
+            }
+            else{
+                System.out.println("FAILED TO ADD APPOINTMENT");
+            }
         }
-        else
-            System.out.println("FAILED...\n");
+        catch(Exception e){
+            System.out.println("TRY AGAIN");
+        }
     }
 
     public static void rescheduleAppointment(Scanner sc){
@@ -139,7 +129,7 @@ public class patientCases {
         //YET TO COMPLETE
     }
 
-    public static void patientLogout(Scanner sc) throws Exception{
+    public static void patientLogout(Scanner sc){
         System.out.println("LOGGED OUT SUCCESSFULLY");
         System.out.println("LOGIN AGAIN --> 'L' GO TO MAIN MENU --> 'M'");
         char loop=sc.next().charAt(0);

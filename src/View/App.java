@@ -2,13 +2,13 @@ package View;
 import java.util.*;
 
 public class App {
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args){
         Scanner sc=new Scanner(System.in);
         System.out.println("------------------------------------\nHOSPITAL DATABASE MANAGEMENT SYSTEM\n------------------------------------");
         displayMainMenu(sc);
         sc.close();
     }
-    public static void displayMainMenu(Scanner sc) throws Exception{
+    public static void displayMainMenu(Scanner sc){
         System.out.println("CHOOSE USER TYPE\n1.ADMIN\n2.DOCTOR\n3.PATIENT");
         int option=sc.nextInt(); //choose user type -- > admin/doctor/patient
         switch(option){
@@ -28,7 +28,7 @@ public class App {
             break;
         }
     }
-    public static void signInOrSignUp() throws Exception{
+    public static void signInOrSignUp(){
             Scanner sc=new Scanner(System.in);
             System.out.println("---------------\n1.ADMIN LOGIN\n2.ADMIN SIGNUP\n3.REGISTER PATIENT\n4.REGISTER DOCTOR\n---------------");
             int choice=sc.nextInt(); 

@@ -17,6 +17,21 @@ public class Availability {
         this.appointmentID=appointmentID;
     }
 
+    public int getDoctorID() {
+        return doctorID;
+    }
+    public String getDay() {
+        return day;
+    }
+    public String getSlot() {
+        return slot;
+    }
+    public String getStatusOfSlot() {
+        return statusOfSlot;
+    }
+    public int getAppointmentID() {
+        return appointmentID;
+    }
 
     
 }

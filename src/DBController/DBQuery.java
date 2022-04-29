@@ -5,48 +5,48 @@ import Model.*;
 public class DBQuery {
 
     //method returning query to add new doctor to the doctor table
-    public static String addDoctorQuery(Doctors doctor){
-        return "insert into doctors(name,specialization)values('"+doctor.doctorName+"','"+doctor.specialization+"')";
+    public static String addDoctorQuery(String new_name,String doctorSpecialization){
+        return "insert into doctors(name,specialization)values('"+new_name+"','"+doctorSpecialization+"')";
     }
 
     //method returning the query to add new patient to the patient table
-    public static String addPatientQuery(Patients patient){
-        return "insert into patients(name)values('"+patient.patientName+"')";
+    public static String addPatientQuery(String new_name){
+        return "insert into patients(name)values('"+new_name+"')";
     }
 
     //method returning the query to remove a particular doctor from the doctor table using doctorID
-    public static String removeDoctorQuery(Doctors doctor){
-        return "delete from doctors where d_id='"+doctor.doctorID+"'";
+    public static String removeDoctorQuery(int id){
+        return "delete from doctors where d_id='"+id+"'";
     }
 
     //method returning the query to remove a particular patient from the patient table using patientID
-    public static String removePatientQuery(Patients patient){
-        return "delete from patients where p_id='"+patient.patientID+"'";
+    public static String removePatientQuery(int id){
+        return "delete from patients where p_id='"+id+"'";
     }
 
     //method returning the query to update the doctor name using doctorID
-    public static String updateDoctorNameQuery(Doctors doctor){
-        return "update doctors set name='"+doctor.doctorName+"' where d_id='"+doctor.doctorID+"'";
+    public static String updateDoctorNameQuery(int id,String newName){
+        return "update doctors set name='"+newName+"' where d_id='"+id+"'";
     }
 
     //method returning the query to update the specialization of the doctor using doctorID
-    public static String updateDoctorSpecializationQuery(Doctors doctor){
-        return "update doctors set specialization='"+doctor.specialization+"' where d_id='"+doctor.doctorID+"'";
+    public static String updateDoctorSpecializationQuery(int id,String specialization){
+        return "update doctors set specialization='"+specialization+"' where d_id='"+id+"'";
     }
 
     //method returning the query to update the patient name using patientID
-    public static String updatePatientNameQuery(Patients patient){
-        return "update patients set name='"+patient.patientName+"' where p_id='"+patient.patientID+"'";
+    public static String updatePatientNameQuery(int id,String newName){
+        return "update patients set name='"+newName+"' where p_id='"+id+"'";
     }
 
     //method returning the query to view a particular doctor using doctorID
     public static String viewDoctorQuery(Doctors doctor){
-        return "select * from doctors where d_id='"+doctor.doctorID+"'";
+        return "select * from doctors where d_id='"+doctor.getDoctorID()+"'";
     }
 
     //method returning the query to view a particular patient using patientID
     public static String viewPatientQuery(Patients patient){
-        return "select * from patients where p_id='"+patient.patientID+"'";
+        return "select * from patients where p_id='"+patient.getPatientID()+"'";
     }
 
     static final String sql1="select * from doctors";
@@ -62,70 +62,69 @@ public class DBQuery {
     }
 
     //method returning the query change the password of the user
-    public static String changePasswordQuery(Users user){
-        return "update users set password='"+user.passWord+"' where username='"+user.userName+"'";
+    public static String changePasswordQuery(String userNameInput,String newPassword){
+        return "update users set password='"+newPassword+"' where username='"+userNameInput+"'";
     }
 
     //method returning the query to check if admin username and password are valid
-    public static String adminCheck(Users user){
-        return "select count(*) AS C from users where username='"+user.userName+"' AND password='"+user.passWord+"' AND position='"+user.userType+"'";
+    public static String adminCheck(String usernameInput,String passwordInput,String usertype){
+        return "select count(*) AS C from users where username='"+usernameInput+"' AND password='"+passwordInput+"' AND position='"+usertype+"'";
     }
 
     //method returning query to check if doctor username and password are valid
-    public static String doctorCheck(Users user){
-        return "select count(*) AS C from users where username='" + user.userName + "' AND password='" + user.passWord + "' AND position='"+user.userType+"'";
+    public static String doctorCheck(String usernameInput,String passwordInput,String usertype){
+        return "select count(*) AS C from users where username='" + usernameInput + "' AND password='" + passwordInput + "' AND position='"+usertype+"'";
     }
 
     //method returning query to check if patient username and password are valid
-    public static String patientCheck(Users user){
-        return "select count(*) AS C from users where username='" + user.userName + "' AND password='" + user.passWord+ "' AND position='"+user.userType+"'";
+    public static String patientCheck(String usernameInput,String passwordInput,String usertype){
+        return "select count(*) AS C from users where username='" + usernameInput + "' AND password='" + passwordInput+ "' AND position='"+usertype+"'";
     }
 
     //method returning query to register new users
-    public static String registerUser(Users user){
-        return "insert into users(username,password,position) values('" +user.userName+ "','" +user.passWord+ "','" +user.userType+ "')";
+    public static String registerUser(String username,String password,String usertype){
+        return "insert into users(username,password,position) values('" +username+ "','" +password+ "','" +usertype+ "')";
     }
 
     //method returning query to check whether doctors exist with the preferred specializations
-    public static String checkSpecialization(Doctors doctor){
-        return "select count(*) as C from doctors where specialization='"+doctor.specialization+"'";
+    public static String checkSpecialization(String requiredSpecialization){
+        return "select count(*) as C from doctors where specialization='"+requiredSpecialization+"'";
     }
     
     //method returning query to display doctors with the preferred specialization
     public static String viewSpecialization(Doctors doctor){
-        return "select * from doctors where specialization='"+doctor.specialization+"'";
+        return "select * from doctors where specialization='"+doctor.getSpecialization()+"'";
     }
 
     //method returning query to display doctors with the preferred specialization
-    public static String updateStatus(Availability availabilityObject){
-        return "update availability set status='"+availabilityObject.statusOfSlot+"' where d_id='"+availabilityObject.doctorID+"' AND day='"+availabilityObject.day+"' AND slot='"+availabilityObject.slot+"'";
+    public static String updateStatus(String slotStatus,String chosenDay,String chosenSlot,int id){
+        return "update availability set status='"+slotStatus+"' where d_id='"+id+"' AND day='"+chosenDay+"' AND slot='"+chosenSlot+"'";
     }
 
     //method returning query to display all the available slots
     public static String displayAvailableSlots(String bookingStatus,Doctors doctor1){
-        return "select d_id,day,slot from availability where d_id='"+doctor1.doctorID+"' AND status='"+bookingStatus+"'";
+        return "select d_id,day,slot from availability where d_id='"+doctor1.getDoctorID()+"' AND status='"+bookingStatus+"'";
     }
 
     //method returning query to insert new appointment details
-    public static String insertAppointmentDetails(Appointments appointment){
-        return "insert into appointments(d_id,p_id) values ('"+appointment.doctorID+"','"+appointment.patientID+"')";
+    public static String insertAppointmentDetails(int doctorID,int patientID){
+        return "insert into appointments(d_id,p_id) values ('"+doctorID+"','"+patientID+"')";
     }
 
     //method returning query retrieve appointment id from appointment table
-    public static String insertAppointmentId(Appointments appointment){
-        return "select appointment_id from appointments where d_id='"+appointment.doctorID+"' AND p_id='"+appointment.patientID+"'";
+    public static String selectAppointmentIdQuery(Appointments appointment){
+        return "select appointment_id from appointments where d_id='"+appointment.getDoctorID()+"' AND p_id='"+appointment.getPatientID()+"'";
     }
 
     //method returning query update the appointment id in the newly booked appointment in availability table 
-    public static String updateAppID(int newAppointmentId,Appointments appointment,Availability availabilityObject){
-        return "update availability set appointment_id='"+newAppointmentId+"' where d_id='"+appointment.doctorID+"' AND status='"+availabilityObject.statusOfSlot+"' AND day='"+availabilityObject.day+"' AND slot='"+availabilityObject.slot+"'";
+    public static String updateAppID(int newAppointmentId,int doctor_id,String slotStatus,String chosenDay,String chosenSlot){
+        return "update availability set appointment_id='"+newAppointmentId+"' where d_id='"+doctor_id+"' AND status='"+slotStatus+"' AND day='"+chosenDay+"' AND slot='"+chosenSlot+"'";
     }
     //method returning query to select the details of appointments
     public static String viewAppointmentQuery(Doctors doctor){
-        return "select * from appointments inner join availability ON appointments.appointment_id=availability.appointment_id where d_id='"+doctor.doctorID+"'";
+        return "select * from appointments inner join availability ON appointments.appointment_id=availability.appointment_id where d_id='"+doctor.getDoctorID()+"'";
     }
-    
-    //method returning query to selevt
+
 
 
 

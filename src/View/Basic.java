@@ -1,14 +1,12 @@
 package View;
-import Model.*;
 import DBController.*;
 
-import java.sql.*;
 import java.util.*;
 
 public class Basic extends adminCases{ //Basic class extends the adminCases class
     
-    public static void adminLogin() throws Exception{
-        DBInitializer.createNewConnection(); //establish connection
+    public static void adminLogin(){
+        try{
         Scanner sc=new Scanner(System.in);
 
         System.out.println("ENTER USERNAME");
@@ -17,24 +15,22 @@ public class Basic extends adminCases{ //Basic class extends the adminCases clas
         System.out.println("ENTER PASSWORD");
         String passwordInput=sc.nextLine(); //input password from the admin
 
-        String sql =DBQuery.adminCheck(usernameInput,passwordInput); //returns query to validate input username and password
-
-        ResultSet rs=DBInitializer.s.executeQuery(sql); 
-        rs.next();
-        int check=rs.getInt("C"); //returns count of records with the given username and password
-
-        if(check==1){ //corresponding username and password exists
+        if(DBHandler.checkAdminValidity(usernameInput,passwordInput,"admin")==1){
             System.out.println("LOGGED IN SUCCESSFULLY");
-            adminCases.adminOperations(user.userName,sc); //choose from the list of admin operations
+            adminCases.adminOperations(usernameInput,sc); //choose from the list of admin operations
         }
         else{
             System.out.println("INVALID LOGIN"); 
             App.signInOrSignUp(); //try logging in again or register new user //create credentials alone
         }
         sc.close();
+        }
+        catch(Exception e){
+            System.out.println("TRY AGAIN");
+        }
     }
-    public static void doctorLogin() throws Exception {
-        DBInitializer.createNewConnection(); //establish connection
+    public static void doctorLogin(){
+        try{
         Scanner sc = new Scanner(System.in);
 
         System.out.println("ENTER USERNAME");
@@ -42,27 +38,25 @@ public class Basic extends adminCases{ //Basic class extends the adminCases clas
 
         System.out.println("ENTER PASSWORD");
         String passwordInput = sc.next(); //get password as input from the doctor
-        
-        Users user=new Users(usernameInput,passwordInput,"doctor");
-        String sql=DBQuery.doctorCheck(user);
 
-        ResultSet rs = DBInitializer.s.executeQuery(sql);
-        rs.next();
-        int check = rs.getInt("C");
-
-        if (check == 1)
+        if (DBHandler.checkDoctorValidity(usernameInput, passwordInput,"doctor")==1)
         {
             System.out.println("LOGGED IN SUCCESSFULLY");
-            doctorCases.doctorOperations(user.userName,sc);
+            doctorCases.doctorOperations(usernameInput,sc);
         }
-        else {
+        else{
             System.out.println("INVALID LOGIN");
             doctorLogin();
         }
         sc.close();
+        }
+        catch(Exception e){
+            System.out.println("TRY AGAIN");
+        }
+
     }
-    public static void patientLogin() throws Exception {
-        DBInitializer.createNewConnection();
+    public static void patientLogin(){
+        try{
         Scanner sc = new Scanner(System.in);
         
         System.out.println("ENTER USERNAME");
@@ -71,17 +65,10 @@ public class Basic extends adminCases{ //Basic class extends the adminCases clas
         System.out.println("ENTER PASSWORD");
         String passwordInput = sc.next();
 
-        Users user=new Users(usernameInput,passwordInput,"patient");
-        
-        String sql=DBQuery.patientCheck(user);
-        ResultSet rs = DBInitializer.s.executeQuery(sql);
-        rs.next();
-        int check = rs.getInt("C");
-
-        if (check == 1)
+        if (DBHandler.checkPatientValidity(usernameInput, passwordInput,"patient") == 1)
         {
             System.out.println("LOGGED IN SUCCESSFULLY");
-            patientCases.patientOperations(user.userName,sc);
+            patientCases.patientOperations(usernameInput,sc);
         }
 
         else {
@@ -89,11 +76,15 @@ public class Basic extends adminCases{ //Basic class extends the adminCases clas
             patientLogin();
         }
         sc.close();
+        }
+        catch(Exception e){
+            System.out.println("TRY AGAIN");
+        }
+
     }
 
-    public static void register(String str) throws Exception {
-
-        DBInitializer.createNewConnection();
+    public static void register(String str){
+        try{
         Scanner sc = new Scanner(System.in);
         System.out.println("ENTER A USERNAME");
         String usernameInput = sc.nextLine();
@@ -101,19 +92,21 @@ public class Basic extends adminCases{ //Basic class extends the adminCases clas
         System.out.println("ENTER A DEFAULT PASSWORD");
         String passwordInput = sc.nextLine();
         
-        Users user=new Users(usernameInput,passwordInput,str);
-
-        String sql=DBQuery.registerUser(user);
-        int i = DBInitializer.s.executeUpdate(sql);
-        if (i == 1) {
+        if (DBHandler.userRegistration(usernameInput, passwordInput, str)==1){
             System.out.println("REGISTERED SUCCESSFULLY\nLOGIN NOW -- >");
-            if("admin".equals(user.userType))
+            if("admin".equals(str))
                 Basic.adminLogin();
-            else if("doctor".equals(user.userType))
+            else if("doctor".equals(str))
                 Basic.doctorLogin();
             else
                 Basic.patientLogin();
         }
-        sc.close(); 
+        else
+            System.out.println("USER "+usernameInput+" NOT REGISTERED ... TRY AGAIN");
+        sc.close();
+        }
+        catch(Exception e){
+            System.out.println("TRY AGAIN");
+        }
     }
 }

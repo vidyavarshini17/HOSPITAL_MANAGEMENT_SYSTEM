@@ -3,11 +3,9 @@ import java.util.*;
 import Model.*;
 import DBController.*;
 
-import java.sql.*;
-
 public class adminCases {
     //method having the main menu of the admin login
-    public static void adminOperations(String username,Scanner sc) throws Exception{
+    public static void adminOperations(String username,Scanner sc){
         do{
             System.out.println("------------------\n1.CHANGE PASSWORD\n2.ADD USER\n3.REMOVE USER\n4.UPDATE USER\n5.VIEW USER\n6.VIEW PATIENTS\n7.VIEW DOCTORS\n8.LOGOUT\n------------------");
             int action=sc.nextInt();
@@ -50,7 +48,7 @@ public class adminCases {
             System.out.println("CONTINUE-->Y");
         }while(sc.next().charAt(0)=='y'||sc.next().charAt(0)=='Y');
     }
-    protected static void addUser(String username,Scanner sc) throws Exception{
+    protected static void addUser(String username,Scanner sc){
         char choice;
         do{
             System.out.println("1.DOCTOR\n2.PATIENT");
@@ -74,43 +72,38 @@ public class adminCases {
 
         }while(choice=='y'||choice=='Y'); //loop to perform same operation
     }
-    protected static void addDoctor(Scanner sc) throws SQLException{
-
+    protected static void addDoctor(Scanner sc){
+        try{
         System.out.println("NAME--> ");
         String new_name=sc.next();
 
         System.out.println("SPECIALIZATION--> ");
         String doctorSpecialization=sc.next(); 
-
-        Doctors doctor=new Doctors(0, new_name, doctorSpecialization);
-
-        //call method having query to add doctor to the database and store query in the string sql
-        String sql=DBQuery.addDoctorQuery(doctor);
-
-        int insertionCheck=DBInitializer.s.executeUpdate(sql);
         
-        if(insertionCheck==1)
-            System.out.println("DATA INSERTED");
+        if(DBHandler.doctorInsertion(new_name,doctorSpecialization)==1)
+            System.out.println("Dr."+new_name+" "+doctorSpecialization+"ADDED ");
         else
-            System.out.println("DATA INSERTION FAILED");
+            System.out.println("FAILED TO ADD Dr."+new_name+" "+doctorSpecialization);
+        }
+        catch(Exception e){
+            System.out.println("TRY AGAIN");
+        }
     }
-    protected static void addPatient(Scanner sc) throws SQLException{
-
+    protected static void addPatient(Scanner sc){
+        try{
         System.out.println("NAME--> ");
         String newName=sc.next();
-
-        Patients patient=new Patients(0,newName,0);
-        //call method having query to add patient into the database and store the query in string sql
-        String sql=DBQuery.addPatientQuery(patient);
-
-        int insertionCheck=DBInitializer.s.executeUpdate(sql);
-
-        if(insertionCheck==1)
-            System.out.println("DATA INSERTED");
+        if(DBHandler.patientInsertion(newName)==1)
+            System.out.println("NEW PATIENT "+newName+" ADDED");
         else
-            System.out.println("DATA INSERTION FAILED");
+            System.out.println("FAILED TO ADD NEW PATIENT "+newName);
+
+        }
+        catch(Exception e){
+            System.out.println("TRY AGAIN");
+        }
     }
-    protected static void removeUser(String username,Scanner sc) throws Exception{
+    protected static void removeUser(String username,Scanner sc){
         char choice;
         do{
             System.out.println("1.DOCTOR\n2.PATIENT");
@@ -139,34 +132,29 @@ public class adminCases {
         }while(choice=='y'||choice=='Y'); //loop to perform the same operation again
     }
 
-    protected static void removeDoctor(int id) throws SQLException{
-
-        Doctors doctor=new Doctors(id,null,null);
-        //instantiate doctor object and set values to its attributes
-        String sql=DBQuery.removeDoctorQuery(doctor);
-    
-        int deletionCheck=DBInitializer.s.executeUpdate(sql);
-
-        if(deletionCheck==1)
-            System.out.println("DATA DELETED SUCCESSFULLY");
+    protected static void removeDoctor(int id){
+        try{
+        if(DBHandler.doctorDeletion(id)==1)
+            System.out.println("DOCTOR "+id+" IS REMOVED");
         else
-            System.out.println("DATA DELETION FAILED");
-
+            System.out.println("FAILED TO REMOVE DOCTOR "+id);
+        }
+        catch(Exception e){
+            System.out.println("TRY AGAIN");
+        }
     }
-    protected static void removePatient(int id) throws SQLException{
-
-        Patients patient=new Patients(id,null, 0);
-        //instantiate patient object and set values to its attributes
-        String sql=DBQuery.removePatientQuery(patient);
-        int deletionCheck=DBInitializer.s.executeUpdate(sql);
-
-        if(deletionCheck==1)
-            System.out.println("DATA DELETED SUCCESSFULLY");
+    protected static void removePatient(int id){
+        try{
+            if(DBHandler.patientDeletion(id)==1)        
+            System.out.println("PATIENT "+id+" IS REMOVED");
         else
-            System.out.println("DATA DELETION FAILED");
-
+            System.out.println("FAILED TO REMOVE DOCTOR "+id);
+        }
+        catch(Exception e){
+            System.out.println("TRY AGAIN");
+        }
     }
-    protected static void updateUser(String username,Scanner sc) throws Exception{
+    protected static void updateUser(String username,Scanner sc){
         char choice;
         do{
             System.out.println("--------------------------\n1.UPDATE DOCTOR NAME\n2.UPDATE DOCTOR SPECIALIZATION\n3.UPDATE PATIENT NAME\n--------------------------");
@@ -196,42 +184,47 @@ public class adminCases {
 
         }while(choice=='y'||choice=='Y'); //loop to perform the same operation
     }
-    private static void updateDoctorName (int id,Scanner sc) throws SQLException{
+    private static void updateDoctorName (int id,Scanner sc){
+        try{
         System.out.println("ENTER NEW NAME TO UPDATE");
         String newName=sc.next();
-
-        Doctors doctor=new Doctors(id,newName,null);
-        String sql=DBQuery.updateDoctorNameQuery(doctor);
-
-        int check=DBInitializer.s.executeUpdate(sql);
-
-        if(check==1)
-            System.out.println("DATA IS UPDATED SUCCESSFULLY");
+        if(DBHandler.updateNameOfDoctor(id,newName)==1)
+            System.out.println("UPDATED DOCTOR "+id+ "'s NAME TO"+newName);
+        else
+            System.out.println("FAILED TO UPDATE DOCTOR "+id+ "'s NAME TO"+newName);
+        }
+        catch(Exception e){
+            System.out.println("TRY AGAIN");
+        }
     }
-    private static void updateDoctorSpecialization(int id,Scanner sc) throws SQLException{
-
+    private static void updateDoctorSpecialization(int id,Scanner sc){
+        try{
         System.out.println("ENTER SPECIALIZATION");
         String newSpecialization=sc.next();
-        
-        Doctors doctor=new Doctors(id,null,newSpecialization);
-        String sql=DBQuery.updateDoctorSpecializationQuery(doctor);
-
-        int check=DBInitializer.s.executeUpdate(sql);
-        if(check==1)
-            System.out.println("DATA UPDATED SUCCESSFULLY");
+        if(DBHandler.updateSpecializationOfDoctor(id, newSpecialization)==1)
+            System.out.println("UPDATED DOCTOR "+id+ "'s SPECIALIZATION TO"+newSpecialization);
+        else
+            System.out.println("FAILED TO UPDATE DOCTOR "+id+ "'s SPECIALIZATION TO"+newSpecialization);
+        }
+        catch(Exception e){
+            System.out.println("TRY AGAIN");
+     
+        }
     }
-    private static void updatePatientName(int id,Scanner sc) throws SQLException{
+    private static void updatePatientName(int id,Scanner sc){
+        try{
         System.out.println("ENTER NEW NAME TO UPDATE");
-        String newName1=sc.next();
-
-        Patients patient=new Patients(id, newName1,0);
-        String sql=DBQuery.updatePatientNameQuery(patient);
-            
-        int check=DBInitializer.s.executeUpdate(sql);
-        if(check==1)
-            System.out.println("DATA UPDATED SUCCESSFULLY");
-}
-    protected static void viewUser(String username,Scanner sc) throws Exception{
+        String newName=sc.next();
+        if(DBHandler.updateNameOfPatient(id,newName)==1)
+            System.out.println("UPDATED PATIENT "+id+ "'s NAME TO"+newName);
+        else
+            System.out.println("FAILED TO UPDATE PATIENT "+id+ "'s NAME TO"+newName);
+        }
+        catch(Exception e){
+            System.out.println("TRY AGAIN");
+        }
+    }
+    protected static void viewUser(String username,Scanner sc){
         char choice;
         do{
             System.out.println("1.DOCTOR\n2.PATIENT");
@@ -258,58 +251,47 @@ public class adminCases {
 
         }while(choice=='y'||choice=='Y');
     }
-    protected static void viewDoctor(int id) throws SQLException{
-        Doctors doctor=new Doctors(id,null,null);
-        //instantiate doctor object and pass to the method with the query
-        String sql=DBQuery.viewDoctorQuery(doctor);
-
-        ResultSet rs=DBInitializer.s.executeQuery(sql);
-        rs.next();
-        System.out.println(rs.getInt(1)+"\t\t"+rs.getString(2)+"\t\t"+rs.getString(3));
+    protected static void viewDoctor(int id){
+        try{
+        Doctors doctor=new Doctors(id, null, null);
+        DBHandler.displayDoctor(doctor);
+        }
+        catch(Exception e){
+            System.out.println("TRY AGAIN");
+        }
     }
-    protected static void viewPatient(int id) throws SQLException{
+    protected static void viewPatient(int id){
+        try{
         Patients patient=new Patients(id, null,0);
-        //instantiate patient object and pass to the method with the query
-        String sql=DBQuery.viewPatientQuery(patient);
-
-        ResultSet rs=DBInitializer.s.executeQuery(sql);
-        rs.next();
-        System.out.println(rs.getInt(1)+"\t\t"+rs.getString(2)+"\t\t"+rs.getInt(3));
+        DBHandler.displayPatient(patient);
+        }
+        catch(Exception e){
+            System.out.println("TRY AGAIN");
+        }        
     }
-    protected static void viewDoctors() throws SQLException{
+    protected static void viewDoctors(){
         System.out.println("-------------------------------------------------------------\nDOCTOR ID : \tDOCTOR NAME : \tDOCTOR SPECIALIZATION :\n-------------------------------------------------------------");
-
-        String sql=DBQuery.viewAllDoctorsQuery();
-        ResultSet rs=DBInitializer.s.executeQuery(sql);
-        while(rs.next()){
-            System.out.println(rs.getInt(1)+"\t\t"+rs.getString(2)+"\t\t"+rs.getString(3));
-        }
+        DBHandler.displayAllDoctors();
     }
-    protected static void viewPatients() throws SQLException{
+    protected static void viewPatients(){
         System.out.println("-------------------------------------------------------------\nPATIENT ID : \tPATIENT NAME: \tNEXT APPOINTMENT ID :\n-------------------------------------------------------------");
-        
-        String sql=DBQuery.viewAllPatientsQuery();
-        ResultSet rs=DBInitializer.s.executeQuery(sql);
-        while(rs.next()){
-            System.out.println(rs.getString(1)+"\t\t"+rs.getString(2)+"\t\t"+rs.getInt(3));
-        }
+        DBHandler.displayAllPatients();
     }
-    protected static void changePassword(String username,Scanner sc) throws SQLException{
+    protected static void changePassword(String username,Scanner sc){
+        try{
         System.out.println("ENTER A NEW PASSWORD");
         String newPassword=sc.next();
 
-        Users user=new Users(username,newPassword,null);
-        //instantiate new user object and pass it to the method with the corresponding query
-
-        String sql=DBQuery.changePasswordQuery(user);
-        
-        int x=DBInitializer.s.executeUpdate(sql);
-        if(x==1)
-            System.out.println("PASSWORD UPDATED");
+        if(DBHandler.changeOfPassword(username, newPassword)==1)
+            System.out.println("PASSWORD FOR USERNAME "+username+" IS UPDATED");
         else
-            System.out.println("PASSWORD UPDATION FAILED");
+            System.out.println("PASSWORD FOR USERNAME "+username+" IS NOT UPDATED");
+        }
+        catch(Exception e){
+            System.out.println("TRY AGAIN");
+        }
     }   
-    protected static void adminLogout(Scanner sc) throws Exception{
+    protected static void adminLogout(Scanner sc){
         System.out.println("LOGGED OUT SUCCESSFULLY");
         System.out.println("LOGIN OR REGISTER --> 'L' GO TO MAIN MENU --> 'M'");
         char loop=sc.next().charAt(0);

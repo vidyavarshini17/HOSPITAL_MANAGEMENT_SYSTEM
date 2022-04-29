@@ -11,6 +11,14 @@ public class Users {
         this.userName=userName;
         this.passWord=passWord;
         this.userType=userType;
-   }
-    
+    }
+    public String getUserName() {
+        return userName;
+    }
+    public String getPassWord() {
+        return passWord;
+    }
+    public String getUserType() {
+        return userType;
+    }    
 }

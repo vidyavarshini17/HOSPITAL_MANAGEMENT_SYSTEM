@@ -12,5 +12,14 @@ public class Patients {
         this.patientName=patientName;
         this.appointmentID=appointmentID;
     }
+    public int getPatientID() {
+        return patientID;
+    }
+    public String getPatientName() {
+        return patientName;
+    }
+    public int getAppointmentID() {
+        return appointmentID;
+    }   
     
 }

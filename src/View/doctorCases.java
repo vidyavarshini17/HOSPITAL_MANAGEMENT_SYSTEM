@@ -1,13 +1,9 @@
 package View;
-import java.sql.ResultSet;
 import java.util.*;
-
-import DBController.DBInitializer;
-import Model.Doctors;
 
 public class doctorCases {
     //method having main menu for doctor login
-    public static void doctorOperations(String username,Scanner sc) throws Exception{
+    public static void doctorOperations(String username,Scanner sc){
         do {
             System.out.println("1.CHANGE PASSWORD\n2.CANCEL APPOINTMENT\n3.RESCHEDULE APPOINTMENT\n4.VIEW APPOINTMENT\n5.VIEW ALL APPOINTMENTS\n6.UPDATE AVAILABILITY\n7.LOGOUT");
             int action = sc.nextInt();
@@ -47,7 +43,8 @@ public class doctorCases {
         } while (sc.next().charAt(0) == 'y' || sc.next().charAt(0) == 'Y');
     }
     //view the appointments of a particular doctor
-    public static void viewAppointment(Scanner sc) throws Exception {
+    public static void viewAppointment(Scanner sc){
+        /*
         System.out.println("ENTER ID ");
         int id=sc.nextInt();
 
@@ -58,18 +55,22 @@ public class doctorCases {
             System.out.println();
         }
         //YET TO COMPLETE
+        */
     }
     //view all the appointments so far
     public static void viewAllAppointments(){
+        /*
         String sql="select * from appointments inner join availability ON appointments.appointment_id=availability.appointment_id";
         ResultSet rs=DBInitializer.s.executeQuery(sql);
-        while()
+        while(rs.next()){
+            System.out.println(rs.getInt()+" "+rs.get);
+        }
+        */
     }
-
     public static void updateAvailability(){
         //YET TO COMPLETE
     }
-    public static void doctorLogout(Scanner sc) throws Exception{
+    public static void doctorLogout(Scanner sc){
         System.out.println("LOGGED OUT SUCCESSFULLY");
         System.out.println("LOGIN AGAIN --> 'L' GO TO MAIN MENU --> 'M'");
         char loop=sc.next().charAt(0);
