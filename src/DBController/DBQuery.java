@@ -92,7 +92,7 @@ public class DBQuery {
     }
     
     //method returning query to display doctors with the preferred specialization
-    public static String viewSpecialization(Doctors doctor){
+    public static String viewSpecialists(Doctors doctor){
         return "select * from doctors where specialization='"+doctor.getSpecialization()+"'";
     }
 
@@ -103,7 +103,7 @@ public class DBQuery {
 
     //method returning query to display all the available slots
     public static String displayAvailableSlots(String bookingStatus,Doctors doctor1){
-        return "select d_id,day,slot from availability where d_id='"+doctor1.getDoctorID()+"' AND status='"+bookingStatus+"'";
+        return "select day,slot from availability where d_id='"+doctor1.getDoctorID()+"' AND status='"+bookingStatus+"'";
     }
 
     //method returning query to insert new appointment details
@@ -122,7 +122,8 @@ public class DBQuery {
     }
     //method returning query to select the details of appointments
     public static String viewAppointmentQuery(Doctors doctor){
-        return "select * from appointments inner join availability ON appointments.appointment_id=availability.appointment_id where d_id='"+doctor.getDoctorID()+"'";
+        String slotStatus="booked";
+        return "select appointments.appointment_id,appointments.d_id,availability.p_id,appointments.day,appointments.slot from appointments inner join availability ON appointments.appointment_id=availability.appointment_id where d_id='"+doctor.getDoctorID()+"' AND appointments.status='"+slotStatus+"'";
     }
 
 

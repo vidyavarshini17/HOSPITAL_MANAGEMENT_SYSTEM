@@ -38,6 +38,8 @@ public class patientCases {
         } while (sc.next().charAt(0) == 'y' || sc.next().charAt(0) == 'Y');
     }
 
+    //BEGIN TO EDIT HERE
+
     public static void scheduleAppointment(String username,Scanner sc) {
         char choice;
         do{
@@ -59,14 +61,14 @@ public class patientCases {
         if(DBHandler.returnNumberOfSpecialists(requiredSpecialization)>=1){
             Doctors doctor=new Doctors(0, null, requiredSpecialization);
 
-            System.out.println("DOCTOR ID : \tDOCTOR NAME : \tDOCTOR SPECIALIZATION :");
+            System.out.println("DOCTOR ID : \tDOCTOR NAME : \tDOCTOR SPECIALIZATION : ");
 
             DBHandler.returnSpecialists(doctor);
             
             System.out.println("CHOOSE DOCTOR ID");
             int chosenDoctorID=sc.nextInt(); 
 
-            displayAvailability(chosenDoctorID,requiredSpecialization); //check the available slots and days for the particular doctor
+            displayAvailability(chosenDoctorID); //check the available slots and days for the particular doctor
             
             System.out.println("CHOOSE THE DAY");
             String chosenDay=sc.next();
@@ -94,13 +96,12 @@ public class patientCases {
         }
     }
     //method to display all available days and slots of a particular doctor
-    private static void displayAvailability(int id,String chosenSpecialization){
-
-        try{
+    private static void displayAvailability(int id){
+    try{
         System.out.println("DOCTOR ID : \tDAY : \tAVAILABLE SLOT : ");
         String bookingStatus="unbooked";
 
-        Doctors doctor=new Doctors(id,null, chosenSpecialization);
+        Doctors doctor=new Doctors(id,null,null);
         DBHandler.slotdisplay(bookingStatus,doctor);
     }
     catch(Exception e){
@@ -120,9 +121,25 @@ public class patientCases {
             System.out.println("TRY AGAIN");
         }
     }
+    //END EDIT HERE
 
     public static void rescheduleAppointment(Scanner sc){
-        //YET TO COMPLETE
+        System.out.println("ENTER APPOINTMENT ID");
+        int id=sc.nextInt();
+
+        int doctor_id=DBHandler.returnDoctorId(id);
+        String chosenSpecialization=DBHandler.returnSpecialization(doctor_id);
+
+        displayAvailability(doctor_id, chosenSpecialization);
+
+        System.out.println("CHOOSE THE DAY");
+        String chosenDay=sc.next();
+
+        System.out.println("CHOOSE THE SLOT");
+        String chosenSlot=sc.next();
+
+        if(DBHandler.reschedule(id,chosenDay,chosenSlot,doctor_id)==1)
+            System.out.println("APPOINTMENT "+id+"IS RESCHEDULED TO "+chosenDay+" AND "+chosenSlot);
     }
 
     public static void cancelAppointment(Scanner sc){
