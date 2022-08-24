@@ -26,7 +26,7 @@ public class Basic extends adminCases{ //Basic class extends the adminCases clas
         sc.close();
         }
         catch(Exception e){
-            System.out.println("TRY AGAIN");
+            System.out.println("LOGIN FAILED");
         }
     }
     public static void doctorLogin(){
@@ -42,7 +42,7 @@ public class Basic extends adminCases{ //Basic class extends the adminCases clas
         if (DBHandler.checkDoctorValidity(usernameInput, passwordInput,"doctor")==1)
         {
             System.out.println("LOGGED IN SUCCESSFULLY");
-            doctorCases.doctorOperations(usernameInput,sc);
+            //doctorCases.doctorOperations(usernameInput,sc);
         }
         else{
             System.out.println("INVALID LOGIN");
@@ -51,7 +51,7 @@ public class Basic extends adminCases{ //Basic class extends the adminCases clas
         sc.close();
         }
         catch(Exception e){
-            System.out.println("TRY AGAIN");
+            System.out.println("LOGIN FAILED");
         }
 
     }
@@ -68,7 +68,7 @@ public class Basic extends adminCases{ //Basic class extends the adminCases clas
         if (DBHandler.checkPatientValidity(usernameInput, passwordInput,"patient") == 1)
         {
             System.out.println("LOGGED IN SUCCESSFULLY");
-            patientCases.patientOperations(usernameInput,sc);
+            //patientCases.patientOperations(usernameInput,sc);
         }
 
         else {
@@ -78,7 +78,7 @@ public class Basic extends adminCases{ //Basic class extends the adminCases clas
         sc.close();
         }
         catch(Exception e){
-            System.out.println("TRY AGAIN");
+            System.out.println("LOGIN FAILED");
         }
 
     }
@@ -95,18 +95,16 @@ public class Basic extends adminCases{ //Basic class extends the adminCases clas
         if (DBHandler.userRegistration(usernameInput, passwordInput, str)==1){
             System.out.println("REGISTERED SUCCESSFULLY\nLOGIN NOW -- >");
             if("admin".equals(str))
-                Basic.adminLogin();
-            else if("doctor".equals(str))
-                Basic.doctorLogin();
-            else
-                Basic.patientLogin();
-        }
-        else
+                App.signInOrSignUp();
+            }
+        else{
             System.out.println("USER "+usernameInput+" NOT REGISTERED ... TRY AGAIN");
+            register(str);
+        }
         sc.close();
         }
         catch(Exception e){
-            System.out.println("TRY AGAIN");
+            System.out.println("USER NOT REGISTERED ... TRY AGAIN");
         }
     }
 }

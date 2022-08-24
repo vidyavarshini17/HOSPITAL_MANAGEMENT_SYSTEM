@@ -71,6 +71,26 @@ public class doctorCases {
             System.out.println("UNABLE TO VIEW APPOINTMENTS");
         }
     }
+    public static void addNewSlot(Scanner sc){
+        try{
+            System.out.println("ENTER THE DOCTOR ID");
+            int id=sc.nextInt();
+
+            System.out.println("ENTER THE DAY (type in small letters)");
+            String newDay=sc.next();
+
+            System.out.println("CHOOSE THE SLOT\n 1.10:00am-11:00am\n2.1:00pm-2:00pm\n3.5:00pm-6:00pm");
+            int slotChoice=sc.nextInt();
+
+            if(DBHandler.addNewAppointmentSlot(id,newDay,slotChoice,"unbooked")==1)
+                System.out.println("NEW APPOINTMENT SLOT "+slotChoice+" ON "+newDay+" IS ADDED FOR DOCTOR "+id);
+            else
+                System.out.println("FAILED TO ADD NEW APPOINTMENT SLOT "+slotChoice+" ON "+newDay+" FOR DOCTOR "+id);
+        }
+        catch(Exception e){
+            System.out.println("NEW SLOT NOT ADDED");
+        }
+    }
     public static void updateAvailability(String username,Scanner sc){
         try{
             System.out.println("CHOOSE AN OPTION\n1.UPDATE SLOT\n2.UPDATE DAY");
@@ -122,26 +142,14 @@ public class doctorCases {
             }
         }
 
-    public static void addNewSlot(Scanner sc){
-        try{
-            System.out.println("ENTER THE DOCTOR ID");
-            int id=sc.nextInt();
+        public static void cancelAppointment(){
 
-            System.out.println("ENTER THE DAY (type in small letters)");
-            String newDay=sc.next();
-
-            System.out.println("CHOOSE THE SLOT\n 1.10:00am-11:00am\n2.1:00pm-2:00pm\n3.5:00pm-6:00pm");
-            int slotChoice=sc.nextInt();
-
-            if(DBHandler.addNewAppointmentSlot(id,newDay,slotChoice,"unbooked")==1)
-                System.out.println("NEW APPOINTMENT SLOT "+slotChoice+" ON "+newDay+" IS ADDED FOR DOCTOR "+id);
-            else
-                System.out.println("FAILED TO ADD NEW APPOINTMENT SLOT "+slotChoice+" ON "+newDay+" FOR DOCTOR "+id);
         }
-        catch(Exception e){
-            System.out.println("NEW SLOT NOT ADDED");
+ 
+        public static void rescheduleAppointment(){
+         
         }
-    }
+
     public static void doctorLogout(Scanner sc){
         System.out.println("LOGGED OUT SUCCESSFULLY");
         System.out.println("LOGIN AGAIN --> 'L' GO TO MAIN MENU --> 'M'");
@@ -150,5 +158,6 @@ public class doctorCases {
             Basic.doctorLogin();
         else
             App.displayMainMenu(sc);
-    }
+       }
+
 }

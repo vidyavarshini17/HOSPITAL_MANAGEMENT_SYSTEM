@@ -48,6 +48,20 @@ public class adminCases {
             System.out.println("CONTINUE-->Y");
         }while(sc.next().charAt(0)=='y'||sc.next().charAt(0)=='Y');
     }
+    protected static void changePassword(String username,Scanner sc){
+        try{
+        System.out.println("ENTER A NEW PASSWORD");
+        String newPassword=sc.next();
+
+        if(DBHandler.changeOfPassword(username, newPassword)==1)
+            System.out.println("PASSWORD FOR USERNAME "+username+" IS UPDATED");
+        else
+            System.out.println("PASSWORD FOR USERNAME "+username+" IS NOT UPDATED");
+        }
+        catch(Exception e){
+            System.out.println("TRY AGAIN");
+        }
+    }
     protected static void addUser(String username,Scanner sc){
         char choice;
         do{
@@ -65,7 +79,7 @@ public class adminCases {
                 default:
                 break;
             }
-            System.out.println("CONTINUE SAME OPERATION-->Y\nBACK TO OPERATIONS-->N");
+            System.out.println("CONTINUE SAME OPERATION-->Y\nBACK TO ALL OPERATIONS-->N");
             choice=sc.next().charAt(0);
             if(choice=='n'||choice=='N')
                 Basic.adminOperations(username,sc); //go back to main menu of admin login
@@ -82,8 +96,9 @@ public class adminCases {
         
         if(DBHandler.doctorInsertion(new_name,doctorSpecialization)==1)
             System.out.println("Dr."+new_name+" "+doctorSpecialization+"ADDED ");
-        else
+        else{
             System.out.println("FAILED TO ADD Dr."+new_name+" "+doctorSpecialization);
+        }
         }
         catch(Exception e){
             System.out.println("TRY AGAIN");
@@ -95,9 +110,9 @@ public class adminCases {
         String newName=sc.next();
         if(DBHandler.patientInsertion(newName)==1)
             System.out.println("NEW PATIENT "+newName+" ADDED");
-        else
+        else{
             System.out.println("FAILED TO ADD NEW PATIENT "+newName);
-
+        }
         }
         catch(Exception e){
             System.out.println("TRY AGAIN");
@@ -136,8 +151,9 @@ public class adminCases {
         try{
         if(DBHandler.doctorDeletion(id)==1)
             System.out.println("DOCTOR "+id+" IS REMOVED");
-        else
+        else{
             System.out.println("FAILED TO REMOVE DOCTOR "+id);
+        }
         }
         catch(Exception e){
             System.out.println("TRY AGAIN");
@@ -277,20 +293,7 @@ public class adminCases {
         System.out.println("-------------------------------------------------------------\nPATIENT ID : \tPATIENT NAME: \tNEXT APPOINTMENT ID :\n-------------------------------------------------------------");
         DBHandler.displayAllPatients();
     }
-    protected static void changePassword(String username,Scanner sc){
-        try{
-        System.out.println("ENTER A NEW PASSWORD");
-        String newPassword=sc.next();
-
-        if(DBHandler.changeOfPassword(username, newPassword)==1)
-            System.out.println("PASSWORD FOR USERNAME "+username+" IS UPDATED");
-        else
-            System.out.println("PASSWORD FOR USERNAME "+username+" IS NOT UPDATED");
-        }
-        catch(Exception e){
-            System.out.println("TRY AGAIN");
-        }
-    }   
+       
     protected static void adminLogout(Scanner sc){
         System.out.println("LOGGED OUT SUCCESSFULLY");
         System.out.println("LOGIN OR REGISTER --> 'L' GO TO MAIN MENU --> 'M'");

@@ -70,6 +70,22 @@ public class DBHandler {
             return 0;
         }
     }
+
+    public static int changeOfPassword(String username,String newPassword){
+        try{   
+            DBInitializer.createNewConnection();             
+            String sql=DBQuery.changePasswordQuery(username,newPassword);
+            int x=DBInitializer.s.executeUpdate(sql);
+            if(x==1)
+                return 1;
+            else
+                return 0;
+            }
+            catch(Exception e){
+                return 0;
+            }
+        }
+
     public static int doctorInsertion(String new_name,String doctorSpecialization){
         try{
         DBInitializer.createNewConnection();
@@ -219,12 +235,74 @@ public class DBHandler {
             System.out.println("UNABLE TO DISPLAY");
         }
     }
-    public static int changeOfPassword(String username,String newPassword){
-        try{   
-            DBInitializer.createNewConnection();             
-            String sql=DBQuery.changePasswordQuery(username,newPassword);
-            int x=DBInitializer.s.executeUpdate(sql);
-            if(x==1)
+
+    public static void viewAppointmentsOfDoctor(Doctors doctor){
+        try{
+            String sql=DBQuery.viewAppointmentQuery(doctor);
+            ResultSet rs=DBInitializer.s.executeQuery(sql);
+            while(rs.next()){
+                System.out.println(rs.getInt(1)+" "+rs.getInt(2)+" "+rs.getInt(3)+" "+rs.getString(4)+" "+rs.getString(5));
+            }
+        }
+        catch(Exception e){
+            System.out.println("UNABLE TO VIEW THE APPOINTMENTS OF DOCTOR "+doctor.getDoctorID());
+        }
+    }
+    public static void viewAppointments(){
+        try{
+            String sql=DBQuery.viewAllAppointmentsQuery();
+            ResultSet rs=DBInitializer.s.executeQuery(sql);
+            while(rs.next()){
+                System.out.println(rs.getInt(1)+" "+rs.getInt(2)+" "+rs.getInt(3)+" "+rs.getString(4)+" "+rs.getString(5));
+            }
+        }
+        catch(Exception e){
+            System.out.println("UNABLE TO VIEW APPOINTMENTS\n");
+        }
+    }
+
+    public static String findSlot(int newSlotChoice){
+        switch(newSlotChoice){
+            case 1:
+                return "10:00am-11:00am";
+
+            case 2:
+                return "1:00pm-2:00pm";
+
+            case 3:
+                return "5:00pm-6:00pm";
+
+            default:
+                return null;
+        }
+    }
+
+    public static int addNewAppointmentSlot(int id,String newDay,int newSlotChoice,String newStatus){
+        try{
+            DBInitializer.createNewConnection();
+            String chosenSlot=findSlot(newSlotChoice);
+            
+            String sql=DBQuery.addSlot(id,newDay,chosenSlot,newStatus);
+            int check=DBInitializer.s.executeUpdate(sql);
+            if(check==1)
+                return 1;
+            else
+                return 0;
+            }
+        catch(Exception e){
+            return 0;
+        }
+    }
+
+    public static int updateSlot(int id,String oldDay,int oldSlotChoice,int newSlotChoice){
+        try{
+            DBInitializer.createNewConnection();
+            String newSlot=findSlot(newSlotChoice);
+            String oldSlot=findSlot(oldSlotChoice);
+    
+            String sql=DBQuery.slotUpdate(newSlot,id,oldDay,oldSlot);
+            int check=DBInitializer.s.executeUpdate(sql);
+            if(check==1)
                 return 1;
             else
                 return 0;
@@ -233,7 +311,24 @@ public class DBHandler {
                 return 0;
             }
         }
+        public static int updateDay(int id,String oldDay,String newDay,int chosenSlotChoice){
+            try{
+                DBInitializer.createNewConnection();
+                String chosenSlot=findSlot(chosenSlotChoice);
     
+                String sql=DBQuery.dayUpdate(newDay, id, oldDay, chosenSlot);
+                int check=DBInitializer.s.executeUpdate(sql);
+                if(check==1)
+                    return 1;
+                else
+                    return 0;
+            }
+            catch(Exception e){
+                return 0;
+            }     
+        }
+    //check from this
+        
     public static int returnNumberOfSpecialists(String requiredSpecialization){
         try{
         DBInitializer.createNewConnection();
@@ -440,97 +535,6 @@ public class DBHandler {
             System.out.println("FAILED TO RESCHEDULE APPOINTMENT");
             return 0;
         }
-
-    }
-
-    public static void viewAppointmentsOfDoctor(Doctors doctor){
-        try{
-            String sql=DBQuery.viewAppointmentQuery(doctor);
-            ResultSet rs=DBInitializer.s.executeQuery(sql);
-            while(rs.next()){
-                System.out.println(rs.getInt(1)+" "+rs.getInt(2)+" "+rs.getInt(3)+" "+rs.getString(4)+" "+rs.getString(5));
-            }
-        }
-        catch(Exception e){
-            System.out.println("UNABLE TO VIEW THE APPOINTMENTS OF DOCTOR "+doctor.getDoctorID());
-        }
-    }
-    public static void viewAppointments(){
-        try{
-            String slotStatus="booked";
-            String sql="select appointments.appointment_id,appointments.d_id,availability.p_id,appointments.day,appointments.slot from appointments inner join availability ON appointments.appointment_id=availability.appointment_id where appointments.status='"+slotStatus+"'";
-            ResultSet rs=DBInitializer.s.executeQuery(sql);
-            while(rs.next()){
-                System.out.println(rs.getInt(1)+" "+rs.getInt(2)+" "+rs.getInt(3)+" "+rs.getString(4)+" "+rs.getString(5));
-            }
-        }
-        catch(Exception e){
-            System.out.println("UNABLE TO VIEW APPOINTMENTS\n");
-        }
-    }
-    public static int addNewAppointmentSlot(int id,String newDay,int newSlotChoice,String newStatus){
-        try{
-            DBInitializer.createNewConnection();
-            String chosenSlot=findSlot(newSlotChoice);
-            
-            String sql="insert into availability(d_id,day,slot,status) values('"+id+"','"+newDay+"','"+chosenSlot+"','"+newStatus+"')";
-            int check=DBInitializer.s.executeUpdate(sql);
-            if(check==1)
-                return 1;
-            else
-                return 0;
-            }
-        catch(Exception e){
-            return 0;
-        }
-    }
-    public static int updateSlot(int id,String oldDay,int oldSlotChoice,int newSlotChoice){
-    try{
-        DBInitializer.createNewConnection();
-        String newSlot=findSlot(newSlotChoice);
-        String oldSlot=findSlot(oldSlotChoice);
-        String sql="update availability set slot='"+newSlot+"' where d_id='"+id+"' AND day='"+oldDay+"' AND slot='"+oldSlot+"'";
-        int check=DBInitializer.s.executeUpdate(sql);
-        if(check==1)
-            return 1;
-        else
-            return 0;
-        }
-        catch(Exception e){
-            return 0;
-        }
-    }
-    public static int updateDay(int id,String oldDay,String newDay,int chosenSlotChoice){
-        try{
-            DBInitializer.createNewConnection();
-            String chosenSlot=findSlot(chosenSlotChoice);
-
-            String sql="update availability set day='"+newDay+"' where d_id='"+id+"' AND day='"+oldDay+"' AND slot='"+chosenSlot+"'";
-            int check=DBInitializer.s.executeUpdate(sql);
-            if(check==1)
-                return 1;
-            else
-                return 0;
-        }
-        catch(Exception e){
-            return 0;
-        }
-            
-    }
-    public static String findSlot(int newSlotChoice){
-        switch(newSlotChoice){
-            case 1:
-                return "10:00am-11:00am";
-
-            case 2:
-                return "1:00pm-2:00pm";
-
-            case 3:
-                return "5:00pm-6:00pm";
-
-            default:
-                return null;
-        }
-    }
+    } 
 
 }

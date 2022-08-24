@@ -4,6 +4,26 @@ import Model.*;
 //class that consists of all the sql queries required in the program in methods
 public class DBQuery {
 
+    //method returning the query to check if admin username and password are valid
+    public static String adminCheck(String usernameInput,String passwordInput,String usertype){
+        return "select count(*) AS C from users where username='"+usernameInput+"' AND password='"+passwordInput+"' AND position='"+usertype+"'";
+    }
+
+    //method returning query to check if doctor username and password are valid
+    public static String doctorCheck(String usernameInput,String passwordInput,String usertype){
+        return "select count(*) AS C from users where username='" + usernameInput + "' AND password='" + passwordInput + "' AND position='"+usertype+"'";
+    }
+
+    //method returning query to check if patient username and password are valid
+    public static String patientCheck(String usernameInput,String passwordInput,String usertype){
+        return "select count(*) AS C from users where username='" + usernameInput + "' AND password='" + passwordInput+ "' AND position='"+usertype+"'";
+    }
+
+    //method returning query to register new users
+    public static String registerUser(String username,String password,String usertype){
+        return "insert into users(username,password,position) values('" +username+ "','" +password+ "','" +usertype+ "')";
+    }
+
     //method returning query to add new doctor to the doctor table
     public static String addDoctorQuery(String new_name,String doctorSpecialization){
         return "insert into doctors(name,specialization)values('"+new_name+"','"+doctorSpecialization+"')";
@@ -66,25 +86,34 @@ public class DBQuery {
         return "update users set password='"+newPassword+"' where username='"+userNameInput+"'";
     }
 
-    //method returning the query to check if admin username and password are valid
-    public static String adminCheck(String usernameInput,String passwordInput,String usertype){
-        return "select count(*) AS C from users where username='"+usernameInput+"' AND password='"+passwordInput+"' AND position='"+usertype+"'";
+    //method returning query to select the details of appointments
+    public static String viewAppointmentQuery(Doctors doctor){
+        String slotStatus="booked";
+        return "select appointments.appointment_id,appointments.d_id,availability.p_id,appointments.day,appointments.slot from appointments inner join availability ON appointments.appointment_id=availability.appointment_id where d_id='"+doctor.getDoctorID()+"' AND appointments.status='"+slotStatus+"'";
     }
 
-    //method returning query to check if doctor username and password are valid
-    public static String doctorCheck(String usernameInput,String passwordInput,String usertype){
-        return "select count(*) AS C from users where username='" + usernameInput + "' AND password='" + passwordInput + "' AND position='"+usertype+"'";
+    //method returning query to select the details of all appointments
+    public static String viewAllAppointmentsQuery(){
+        String slotStatus="booked";
+        return "select appointments.appointment_id,appointments.d_id,availability.p_id,appointments.day,appointments.slot from appointments inner join availability ON appointments.appointment_id=availability.appointment_id where appointments.status='"+slotStatus+"'";
     }
 
-    //method returning query to check if patient username and password are valid
-    public static String patientCheck(String usernameInput,String passwordInput,String usertype){
-        return "select count(*) AS C from users where username='" + usernameInput + "' AND password='" + passwordInput+ "' AND position='"+usertype+"'";
+    //method to add new slot
+    public static String addSlot(int id,String newDay, String chosenSlot,String newStatus){
+        return "insert into availability(d_id,day,slot,status) values('"+id+"','"+newDay+"','"+chosenSlot+"','"+newStatus+"')";
     }
 
-    //method returning query to register new users
-    public static String registerUser(String username,String password,String usertype){
-        return "insert into users(username,password,position) values('" +username+ "','" +password+ "','" +usertype+ "')";
+    //method to update slot timings
+    public static String slotUpdate(String newSlot,int id,String oldDay,String oldSlot){
+        return "update availability set slot='"+newSlot+"' where d_id='"+id+"' AND day='"+oldDay+"' AND slot='"+oldSlot+"'";
     }
+
+    //method to update day
+    public static String dayUpdate(String newDay,int id,String oldDay,String chosenSlot){
+        return "update availability set day='"+newDay+"' where d_id='"+id+"' AND day='"+oldDay+"' AND slot='"+chosenSlot+"'";
+    }
+
+    //check from here
 
     //method returning query to check whether doctors exist with the preferred specializations
     public static String checkSpecialization(String requiredSpecialization){
@@ -120,11 +149,7 @@ public class DBQuery {
     public static String updateAppID(int newAppointmentId,int doctor_id,String slotStatus,String chosenDay,String chosenSlot){
         return "update availability set appointment_id='"+newAppointmentId+"' where d_id='"+doctor_id+"' AND status='"+slotStatus+"' AND day='"+chosenDay+"' AND slot='"+chosenSlot+"'";
     }
-    //method returning query to select the details of appointments
-    public static String viewAppointmentQuery(Doctors doctor){
-        String slotStatus="booked";
-        return "select appointments.appointment_id,appointments.d_id,availability.p_id,appointments.day,appointments.slot from appointments inner join availability ON appointments.appointment_id=availability.appointment_id where d_id='"+doctor.getDoctorID()+"' AND appointments.status='"+slotStatus+"'";
-    }
+    
 
 
 
